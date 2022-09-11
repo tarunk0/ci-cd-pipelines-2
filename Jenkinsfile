@@ -36,7 +36,7 @@ pipeline {
                 echo "deployment started .."
                 sh 'ls -ltr'
                 sh 'pwd'
-                sh 'sed -i "s/<TAG>/${BUILD_NUMBER}/" myweb.yaml'
+                sh 'sed -i "/<TAG>/${BUILD_NUMBER}/" myweb.yaml'
                 step([
                 $class: 'KubernetesEngineBuilder',
                 projectId: env.PROJECT_ID,
