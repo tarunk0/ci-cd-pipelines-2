@@ -45,7 +45,8 @@ pipeline {
                 location: env.LOCATION,
                 manifestPattern: 'myweb.yaml',
                 credentialsId: env.CREDENTIALS_ID,
-                verifyDeployments: false])
+                verifyDeployments: true])
+                echo "congratulations! Deployment Finished..."
               }
             }
               
