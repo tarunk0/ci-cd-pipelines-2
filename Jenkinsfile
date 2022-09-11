@@ -33,10 +33,11 @@ pipeline {
     }
     stage('Deploy to GKE') {
             steps{
+              container('kubectl'){
                 echo "deployment started .."
                 sh 'ls -ltr'
                 sh 'pwd'
-                sh 'sed -i "/<TAG>/${BUILD_NUMBER}/" myweb.yaml'
+                sh 'sed -i "s/<TAG>/${BUILD_NUMBER}/" myweb.yaml'
                 step([
                 $class: 'KubernetesEngineBuilder',
                 projectId: env.PROJECT_ID,
@@ -45,7 +46,9 @@ pipeline {
                 manifestPattern: 'myweb.yaml',
                 credentialsId: env.CREDENTIALS_ID,
                 verifyDeployments: true])
+              }
             }
+              
         }
     }
   
