@@ -31,9 +31,7 @@ pipeline {
         }
       }
     }
-
-    stages {
-        stage('Deploy to GKE') {
+    stage('Deploy to GKE') {
             steps{
                 step([
                 $class: 'KubernetesEngineBuilder',
@@ -48,4 +46,3 @@ pipeline {
     }
   
   }
-}
