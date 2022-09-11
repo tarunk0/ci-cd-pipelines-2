@@ -9,7 +9,13 @@ pipeline {
       yamlFile 'builder.yaml'
     }
   }
-
+  environment {
+        PROJECT_ID = 'round-forge-355507'
+        CLUSTER_NAME = 'tk-cluster'
+        LOCATION = 'us-central1-a'
+        CREDENTIALS_ID = 'mygke'
+    }
+    
   stages {
 
     stage('Kaniko Build & Push Image') {
@@ -26,15 +32,19 @@ pipeline {
       }
     }
 
-    stage('Deploy App to Kubernetes') {     
-      steps {
-        container('kubectl') {
-          withCredentials([file(credentialsId: 'mygke', variable: 'KUBECONFIG')]) {
-            sh 'sed -i "s/<TAG>/${BUILD_NUMBER}/" myweb.yaml'
-            sh 'kubectl apply -f myweb.yaml'
-          }
+    stages {
+        stage('Deploy to GKE') {
+            steps{
+                step([
+                $class: 'KubernetesEngineBuilder',
+                projectId: env.PROJECT_ID,
+                clusterName: env.CLUSTER_NAME,
+                location: env.LOCATION,
+                manifestPattern: 'myweb.yaml',
+                credentialsId: env.CREDENTIALS_ID,
+                verifyDeployments: true])
+            }
         }
-      }
     }
   
   }
